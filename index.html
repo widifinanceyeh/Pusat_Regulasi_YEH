@@ -1,6 +1,81 @@
-<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="referrer" content="no-referrer"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-src https://script.google.com https://*.googleusercontent.com; form-action 'self' https://script.google.com; connect-src 'self'; base-uri 'self'"><title>Pusat Referensi Regulasi · YEH</title><link rel="icon" href="assets/logo.png"><link rel="stylesheet" href="style.css"></head><body>
-<header class="top"><div class="brand"><img src="assets/logo.png" alt="Logo YEH"><div><strong>Pusat Referensi Regulasi</strong><small>Yayasan Eka Harap</small></div></div><div class="row"><span id="who"></span><button id="logout" hidden>Keluar</button></div></header>
-<section id="loginPanel" class="login card"><h1>Masuk ke Pusat Regulasi</h1><p>Akses terbatas untuk pegawai yang terdaftar.</p><form id="loginForm"><label>User ID<input name="userId" autocomplete="username" required></label><label>Password<input name="password" type="password" autocomplete="current-password" required></label><button class="primary">Masuk</button></form><p id="loginMsg" role="alert"></p></section>
-<section id="changePanel" class="login card" hidden><h2>Ganti password awal</h2><form id="changeForm"><label>Password lama<input name="oldPassword" type="password" required></label><label>Password baru (minimal 12 karakter)<input name="newPassword" type="password" minlength="12" required></label><button class="primary">Simpan dan login kembali</button></form></section>
-<section id="app" hidden><nav class="toolbar"><input id="search" placeholder="Cari judul, pasal, atau frasa..." aria-label="Pencarian"><select id="groupFilter" aria-label="Kelompok"><option value="">Semua kelompok</option></select><button id="searchText">Cari isi</button><button id="sync" hidden>Sinkronisasi</button><button id="adminToggle" hidden>Admin</button></nav><div id="notice" role="status"></div><div class="layout"><aside class="side card"><h2>Daftar Regulasi</h2><div id="regList"></div></aside><main class="reader card"><div id="docHeader"><h2>Pilih regulasi</h2><p>Gunakan daftar kiri atau pencarian untuk mulai membaca.</p></div><div id="docTools" hidden><label>Versi utama <select id="versionSelect"></select></label><label>Bandingkan <select id="compareSelect"><option value="">Tidak</option></select></label><button id="copy">Salin pasal terpilih</button><a id="pdf" href="#" target="_blank" rel="noopener noreferrer" hidden>PDF asli ↗</a></div><nav id="outline" class="outline"></nav><article id="content"></article></main></div><section id="resultsPanel" class="card" hidden><h2>Hasil pencarian isi</h2><div id="results"></div></section><section id="adminPanel" class="card" hidden><h2>Panel Admin</h2><p>Pengaturan dokumen dan akun; semua perubahan diproses oleh GAS.</p><div class="adminGrid"><form id="userForm"><h3>Tambah / Ubah Pengguna</h3><input name="id" placeholder="User ID" required><input name="name" placeholder="Nama" required><select name="role"><option>USER</option><option>ADMIN</option></select><select name="active"><option>YA</option><option>TIDAK</option></select><button>Simpan pengguna</button></form><form id="resetForm"><h3>Reset Password</h3><input name="id" placeholder="User ID" required><input name="password" type="password" minlength="12" placeholder="Password baru" required><button>Reset password</button></form><form id="groupForm"><h3>Kelompok Pegawai</h3><input name="id" placeholder="ID kelompok" required><input name="name" placeholder="Nama kelompok" required><button>Simpan kelompok</button></form><form id="memberForm"><h3>Anggota Kelompok</h3><input name="userId" placeholder="User ID" required><input name="groupId" placeholder="ID kelompok" required><select name="active"><option>YA</option><option>TIDAK</option></select><button>Simpan keanggotaan</button></form><form id="accessForm"><h3>Izin Dokumen</h3><select id="accessReg" name="regulationId"></select><select name="subjectType"><option>GRUP</option><option>USER</option></select><input name="subjectId" placeholder="ID kelompok / User ID" required><select name="effect"><option>IZIN</option><option>TOLAK</option></select><select name="active"><option>YA</option><option>TIDAK</option></select><button>Simpan izin</button></form><form id="regForm"><h3>Konfigurasi Regulasi</h3><select id="adminReg" name="id"></select><input name="title" placeholder="Judul peraturan"><input name="group" placeholder="Kategori"><input name="pdf" placeholder="Link PDF Google Drive"><select name="access"><option>INTERNAL</option><option>TERBATAS</option></select><input name="fullHeader" placeholder="Header teks utuh (opsional)"><input name="baseHeader" placeholder="Header naskah dasar (opsional)"><button>Simpan regulasi</button></form></div><h3>Daftar Pengguna</h3><div id="usersTable"></div></section></section>
-<script src="config.js"></script><script src="app.js" defer></script></body></html>
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src https://script.google.com https://script.googleusercontent.com https://*.googleusercontent.com; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="theme-color" content="#002855">
+<title>Pusat Referensi Regulasi · YEH</title>
+<link rel="icon" type="image/png" href="assets/logo.png">
+<link rel="stylesheet" href="style.css?v=1.3.0">
+</head>
+<body>
+
+<div id="viewBoot" class="boot"><img src="assets/logo.png" alt=""><span class="spinner"></span></div>
+
+<main id="viewLogin" class="auth" hidden>
+  <div class="auth-card">
+    <img class="auth-logo" src="assets/logo.png" alt="Logo Yayasan Eka Harap">
+    <h1>Pusat Referensi Regulasi</h1>
+    <p class="muted">Yayasan Eka Harap · khusus pegawai terdaftar</p>
+    <form id="loginForm" novalidate>
+      <label class="field"><span>User ID</span>
+        <input name="userId" autocomplete="username" autocapitalize="none" spellcheck="false" required></label>
+      <label class="field"><span>Sandi</span>
+        <span class="pw"><input name="password" type="password" autocomplete="current-password" required><button type="button" class="pw-toggle">Lihat</button></span></label>
+      <p class="form-msg" id="loginMsg" role="alert"></p>
+      <button class="btn primary block" type="submit">Masuk</button>
+    </form>
+    <p class="hint">Lupa sandi? Hubungi admin untuk diatur ulang.</p>
+  </div>
+</main>
+
+<main id="viewChange" class="auth" hidden>
+  <div class="auth-card" id="changeCard"></div>
+</main>
+
+<div id="viewApp" hidden>
+  <header class="topbar">
+    <button class="icon-btn only-mobile" id="btnDrawer" type="button" aria-label="Daftar regulasi">☰</button>
+    <a class="brand" href="#/"><img src="assets/logo.png" alt=""><span><strong>Pusat Referensi Regulasi</strong><small>Yayasan Eka Harap</small></span></a>
+    <form class="topsearch" id="searchForm" role="search">
+      <input id="searchInput" type="search" placeholder="Cari isi pasal di semua regulasi…" aria-label="Cari isi pasal" enterkeyhint="search">
+      <button class="btn accent" type="submit">Cari</button>
+    </form>
+    <div class="menu-wrap">
+      <button class="user-btn" id="btnMenu" type="button" aria-haspopup="true" aria-expanded="false">
+        <span class="avatar" id="avatar"></span><span class="user-name" id="userName"></span><span class="dots" aria-hidden="true">⋯</span>
+      </button>
+      <div class="menu" id="menu" role="menu" hidden>
+        <div class="menu-head"><strong id="menuName"></strong><small id="menuRole"></small></div>
+        <button type="button" role="menuitem" data-act="admin" id="menuAdmin" hidden>Panel Admin</button>
+        <button type="button" role="menuitem" data-act="password">Ganti sandi</button>
+        <button type="button" role="menuitem" data-act="refresh">Muat ulang data</button>
+        <div class="menu-sep"></div>
+        <button type="button" role="menuitem" data-act="logout" class="danger">Keluar</button>
+        <div class="menu-foot" id="menuVersion"></div>
+      </div>
+    </div>
+  </header>
+  <div class="shell">
+    <aside class="sidebar" id="sidebar" aria-label="Daftar regulasi">
+      <div class="side-head">
+        <input id="filterInput" type="search" placeholder="Saring judul regulasi…" aria-label="Saring judul">
+        <select id="groupFilter" aria-label="Kategori"></select>
+      </div>
+      <nav id="regList" class="reglist"></nav>
+    </aside>
+    <div class="scrim" id="scrim" hidden></div>
+    <main class="content" id="content"></main>
+  </div>
+</div>
+
+<dialog id="dlg" class="dlg"></dialog>
+<div id="toast" class="toast" role="status" hidden></div>
+
+<script src="config.js?v=1.3.0"></script>
+<script src="api.js?v=1.3.0"></script>
+<script src="app.js?v=1.3.0"></script>
+</body>
+</html>
