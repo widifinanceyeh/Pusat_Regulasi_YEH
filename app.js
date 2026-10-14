@@ -19,6 +19,28 @@ window.addEventListener('message',e=>{
  const q=state.queue.get(m.id);if(!q)return;clearTimeout(q.timer);q.cleanup();
  if(m.payload&&m.payload.ok)q.resolve(m.payload.data);else q.reject(Error(m.payload?.message||'Kesalahan server'));
 });
+// UI helpers: previously missing in v1.2.0.
+function notice(message='') {
+ const target = state.token ? ($('notice') || $('loginMsg')) : ($('loginMsg') || $('notice'));
+ if (target) target.textContent = String(message || '');
+}
+function elem(tag, className='', content) {
+ const node = document.createElement(tag);
+ if (className) node.className = className;
+ if (content !== undefined && content !== null) node.textContent = String(content);
+ return node;
+}
+function opt(select, values, valueOf, labelOf) {
+ if (!select) return;
+ const old = select.value;
+ select.replaceChildren(...values.map(value => {
+  const option = document.createElement('option');
+  option.value = String(valueOf(value));
+  option.textContent = String(labelOf(value));
+  return option;
+ }));
+ if (Array.from(select.options).some(x => x.value === old)) select.value = old;
+}
 async function run(action,p={}){try{notice('Memuat...');const v=await call(action,p);notice('');return v;}catch(e){notice(e.message);throw e;}}
 function showLogged(on){$('loginPanel').hidden=on;$('app').hidden=!on;$('logout').hidden=!on;}
 function boot(){}
