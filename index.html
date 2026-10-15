@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="referrer" content="no-referrer">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src https://script.google.com https://script.googleusercontent.com https://*.googleusercontent.com; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src https://script.google.com https://script.googleusercontent.com https://*.googleusercontent.com; frame-src https://drive.google.com https://docs.google.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="theme-color" content="#002855">
 <title>Pusat Referensi Regulasi · YEH</title>
 <link rel="icon" type="image/png" href="assets/logo.png">
-<link rel="stylesheet" href="style.css?v=1.3.0">
+<link rel="stylesheet" href="style.css?v=1.4.0">
 </head>
 <body>
 
@@ -36,35 +36,47 @@
 </main>
 
 <div id="viewApp" hidden>
-  <header class="topbar">
-    <button class="icon-btn only-mobile" id="btnDrawer" type="button" aria-label="Daftar regulasi">☰</button>
+  <header class="topbar" id="topbar">
+    <button class="icon-btn hide-wide" id="btnDrawer" type="button" aria-label="Buka panel" data-icon="menu"></button>
+    <div class="navbtns">
+      <button class="icon-btn" id="btnBack" type="button" aria-label="Kembali" title="Kembali" data-icon="arrowLeft" disabled></button>
+      <button class="icon-btn" id="btnFwd" type="button" aria-label="Maju" title="Maju" data-icon="arrowRight" disabled></button>
+    </div>
     <a class="brand" href="#/"><img src="assets/logo.png" alt=""><span><strong>Pusat Referensi Regulasi</strong><small>Yayasan Eka Harap</small></span></a>
     <form class="topsearch" id="searchForm" role="search">
-      <input id="searchInput" type="search" placeholder="Cari isi pasal di semua regulasi…" aria-label="Cari isi pasal" enterkeyhint="search">
+      <span class="ts-icon" data-icon="search"></span>
+      <input id="searchInput" type="search" placeholder="Cari isi pasal di semua regulasi…" aria-label="Cari isi pasal" enterkeyhint="search" autocomplete="off">
       <button class="btn accent" type="submit">Cari</button>
     </form>
-    <div class="menu-wrap">
-      <button class="user-btn" id="btnMenu" type="button" aria-haspopup="true" aria-expanded="false">
-        <span class="avatar" id="avatar"></span><span class="user-name" id="userName"></span><span class="dots" aria-hidden="true">⋯</span>
-      </button>
-      <div class="menu" id="menu" role="menu" hidden>
-        <div class="menu-head"><strong id="menuName"></strong><small id="menuRole"></small></div>
-        <button type="button" role="menuitem" data-act="admin" id="menuAdmin" hidden>Panel Admin</button>
-        <button type="button" role="menuitem" data-act="password">Ganti sandi</button>
-        <button type="button" role="menuitem" data-act="refresh">Muat ulang data</button>
-        <div class="menu-sep"></div>
-        <button type="button" role="menuitem" data-act="logout" class="danger">Keluar</button>
-        <div class="menu-foot" id="menuVersion"></div>
-      </div>
-    </div>
+    <button class="icon-btn only-phone" id="btnSearchToggle" type="button" aria-label="Cari" data-icon="search"></button>
+    <button class="user-btn" id="btnUser" type="button" aria-haspopup="menu">
+      <span class="avatar" id="avatar"></span><span class="user-name" id="userName"></span><span class="chev" data-icon="chevDown"></span>
+    </button>
   </header>
-  <div class="shell">
-    <aside class="sidebar" id="sidebar" aria-label="Daftar regulasi">
-      <div class="side-head">
-        <input id="filterInput" type="search" placeholder="Saring judul regulasi…" aria-label="Saring judul">
-        <select id="groupFilter" aria-label="Kategori"></select>
+
+  <div class="shell" id="shell">
+    <aside class="sidebar" id="sidebar" aria-label="Panel samping">
+      <nav class="side-nav">
+        <a href="#/" data-nav="home" title="Beranda"><span class="ic" data-icon="home"></span><span class="lb">Beranda</span></a>
+        <a href="#/penanda" data-nav="marks" title="Penanda saya"><span class="ic" data-icon="star"></span><span class="lb">Penanda saya</span><b class="count" id="markCount"></b></a>
+        <a href="#/admin" data-nav="admin" id="navAdmin" title="Panel Admin" hidden><span class="ic" data-icon="settings"></span><span class="lb">Panel Admin</span></a>
+      </nav>
+      <div class="side-tabs" role="tablist">
+        <button type="button" role="tab" data-tab="regs" title="Daftar regulasi"><span class="ic" data-icon="book"></span><span class="lb">Regulasi</span></button>
+        <button type="button" role="tab" data-tab="toc" title="Daftar isi naskah"><span class="ic" data-icon="list"></span><span class="lb">Daftar isi</span></button>
       </div>
-      <nav id="regList" class="reglist"></nav>
+      <div class="side-pane" id="paneRegs">
+        <div class="pane-tools">
+          <input id="filterInput" type="search" placeholder="Saring judul…" aria-label="Saring judul regulasi">
+          <button class="icon-btn sm" id="btnFoldAll" type="button" title="Lipat / buka semua kategori" data-icon="fold"></button>
+        </div>
+        <nav id="regList" class="reglist"></nav>
+      </div>
+      <div class="side-pane" id="paneToc" hidden></div>
+      <div class="side-foot">
+        <span class="lib-status" id="libStatus"></span>
+        <button class="icon-btn sm hide-narrow" id="btnCollapse" type="button" title="Perkecil panel" aria-label="Perkecil panel" data-icon="chevLeft"></button>
+      </div>
     </aside>
     <div class="scrim" id="scrim" hidden></div>
     <main class="content" id="content"></main>
@@ -74,8 +86,9 @@
 <dialog id="dlg" class="dlg"></dialog>
 <div id="toast" class="toast" role="status" hidden></div>
 
-<script src="config.js?v=1.3.0"></script>
-<script src="api.js?v=1.3.0"></script>
-<script src="app.js?v=1.3.0"></script>
+<script src="config.js?v=1.4.0"></script>
+<script src="api.js?v=1.4.0"></script>
+<script src="store.js?v=1.4.0"></script>
+<script src="app.js?v=1.4.0"></script>
 </body>
 </html>

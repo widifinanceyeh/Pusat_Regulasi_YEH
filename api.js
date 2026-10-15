@@ -2,7 +2,7 @@
 /* Pemanggil Apps Script: POST teks JSON (tanpa preflight CORS), batas waktu, satu kali ulang untuk galat jaringan pada permintaan baca. */
 (function () {
   const C = window.YEH_CONFIG;
-  const READ = new Set(['ping', 'init', 'document', 'search', 'adminData']);
+  const READ = new Set(['ping', 'init', 'document', 'docs', 'search', 'adminData', 'adminActivity']);
 
   class ApiError extends Error {
     constructor(message, code, network) { super(message); this.code = code || ''; this.network = !!network; }
